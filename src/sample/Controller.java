@@ -82,7 +82,7 @@ public class Controller {
     private void connect() {
         String redisURI = redisURIInput.getText();
         if (StringUtil.isEmpty(redisURI)) {
-            queryResult.setText("我劝你善良，不输URI，我连啥啊？");
+            queryResult.setText("我劝你善良，不填URI，我连啥啊？");
             return;
         }
 
