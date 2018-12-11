@@ -91,6 +91,7 @@ public class Controller {
             connectionStatus.setUri(redisURI.trim());
             redisOperationService = new RedisOperationService(uri);
             redisOperationService.checkRedisURI(connectionStatus);
+            redisOperationService.query("INFO", queryResult);
         } catch (Exception e) {
             logger.severe(e.getMessage());
         }
