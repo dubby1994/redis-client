@@ -6,6 +6,7 @@ package sample.service;
 
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
+import sample.constant.RedisCommandConstant;
 import sample.context.RedisConnectionStatus;
 import sample.util.LogUtil;
 import sample.util.RedisCommandParser;
@@ -104,9 +105,10 @@ public class RedisOperationService {
     }
 
     public void query(String command, TextArea queryResult) {
+        //处理注释
         new Thread(() -> {
             try {
-                String result = doQuery(command);
+                String result = doQuery(transformCommand(command));
                 Platform.runLater(() -> {
                     queryResult.setText(result);
                 });
@@ -114,6 +116,34 @@ public class RedisOperationService {
                 logger.severe(String.format("query %s", e.toString()));
             }
         }).start();
+    }
+
+    /**
+     * 过滤掉注释
+     */
+    private String transformCommand(String command) {
+        if (StringUtil.isEmpty(command)) {
+            return "INFO";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        String[] strings = command.split("\n");
+        int i = 0;
+        for (String str : strings) {
+            if (str.startsWith(RedisCommandConstant.COMMENT)) {
+                continue;
+            }
+            if (i == 0) {
+                sb.append(str);
+            } else {
+                sb.append(str);
+                sb.append("\n");
+            }
+            ++i;
+        }
+
+        return sb.toString();
     }
 
     private String doQuery(String command) throws IOException {

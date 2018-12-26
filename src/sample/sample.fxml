@@ -3,47 +3,47 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="800.0" maxWidth="1000.0" minHeight="800.0" minWidth="1000.0" prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
-    <children>
-        <HBox prefHeight="10.0" prefWidth="1000.0">
-            <children>
-                <TextField fx:id="redisURIInput" prefHeight="10.0" prefWidth="500.0" text="redis://:password@127.0.0.1:6379/0">
-               <font>
-                  <Font size="14.0" />
-               </font></TextField>
-                <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#handleConnectButtonAction" text="connect/disconnect">
-               <font>
-                  <Font size="14.0" />
-               </font></Button>
-                <TextField fx:id="redidConnectStatusOutput" editable="false" prefHeight="10.0" prefWidth="200.0" text="not connected">
-               <font>
-                  <Font size="14.0" />
-               </font></TextField>
-                <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="query">
-               <font>
-                  <Font size="14.0" />
-               </font></Button>
-            </children>
-        </HBox>
-        <HBox prefHeight="190.0" prefWidth="1000.0">
-            <children>
-                <TextArea fx:id="commandInput" prefHeight="190.0" prefWidth="1000.0" promptText="redis command">
-               <font>
-                  <Font size="14.0" />
-               </font></TextArea>
-            </children>
-        </HBox>
-        <HBox prefHeight="600.0" prefWidth="1000.0">
-            <children>
-                <TextArea fx:id="queryResult" editable="false" prefHeight="600.0" prefWidth="1000.0" promptText="redis query result" text="redis query result" wrapText="true">
-               <font>
-                  <Font size="14.0" />
-               </font></TextArea>
-            </children>
-        </HBox>
-    </children>
-</VBox>
+<?import javafx.scene.control.Label?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="830" minWidth="1000" prefHeight="830" prefWidth="1000" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+
+    <HBox prefHeight="20.0" prefWidth="1000.0" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+        <TextField fx:id="redisURIInput" prefHeight="10.0" prefWidth="500.0" text="redis://:password@127.0.0.1:6379/0">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </TextField>
+        <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#handleConnectButtonAction" text="connect/disconnect">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Button>
+        <TextField fx:id="redidConnectStatusOutput" editable="false" prefHeight="10.0" prefWidth="200.0" text="not connected">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </TextField>
+    </HBox>
+
+    <TextArea fx:id="commandInput" prefHeight="230.0" prefWidth="1000.0" promptText="redis command" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+        <font>
+            <Font name="System Bold" size="14.0" />
+        </font>
+    </TextArea>
+
+    <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="查询" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="270.0">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Button>
+
+    <TextArea fx:id="queryResult" editable="false" prefHeight="600.0" prefWidth="1000.0" promptText="redis query result" text="redis query result" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="300.0">
+        <font>
+            <Font name="System Italic" size="14.0" />
+        </font>
+    </TextArea>
+
+</AnchorPane>
