@@ -72,6 +72,24 @@ public class RedisCommandParser {
             bytes[1] = Digit[i % 10];
             return bytes;
         }
+        if (i < 1000) {
+            byte[] bytes = new byte[3];
+            bytes[0] = Digit[i / 100];
+            i = i % 100;
+            bytes[1] = Digit[i / 10];
+            bytes[2] = Digit[i % 10];
+            return bytes;
+        }
+        if (i < 10000) {
+            byte[] bytes = new byte[4];
+            bytes[0] = Digit[i / 1000];
+            i = i % 1000;
+            bytes[1] = Digit[i / 100];
+            i = i % 100;
+            bytes[2] = Digit[i / 10];
+            bytes[3] = Digit[i % 10];
+            return bytes;
+        }
         throw new InvalidParameterException("redis command too long");
     }
 
