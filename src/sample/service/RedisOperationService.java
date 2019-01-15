@@ -33,6 +33,9 @@ public class RedisOperationService {
     private String password;
     private int dbIndex;
 
+    //500MB
+    private final byte[] byteBuffer = new byte[1024 * 1024 * 500];
+
     public RedisOperationService(URI uri) {
         host = uri.getHost();
         port = uri.getPort();
@@ -71,9 +74,9 @@ public class RedisOperationService {
         outputStream.write(authCmdBytes);
         outputStream.flush();
 
-        byte[] bytes = new byte[102400];
-        int length = inputStream.read(bytes);
-        String authResult = new String(bytes, 0, length, charset);
+        resetByteBuffer();
+        int length = inputStream.read(byteBuffer);
+        String authResult = new String(byteBuffer, 0, length, charset);
         logger.info(authResult);
 
         //SELECT dbIndex
@@ -82,9 +85,9 @@ public class RedisOperationService {
         outputStream.write(selectCmdBytes);
         outputStream.flush();
 
-        bytes = new byte[102400];
-        length = inputStream.read(bytes);
-        String selectResult = new String(bytes, 0, length, charset);
+        resetByteBuffer();
+        length = inputStream.read(byteBuffer);
+        String selectResult = new String(byteBuffer, 0, length, charset);
         logger.info(selectResult);
 
         //PING
@@ -93,9 +96,9 @@ public class RedisOperationService {
         outputStream.write(pingCmdBytes);
         outputStream.flush();
 
-        bytes = new byte[102400];
-        length = inputStream.read(bytes);
-        String result = new String(bytes, 0, length, charset);
+        resetByteBuffer();
+        length = inputStream.read(byteBuffer);
+        String result = new String(byteBuffer, 0, length, charset);
         logger.info(result);
 
         outputStream.close();
@@ -165,9 +168,9 @@ public class RedisOperationService {
         outputStream.write(authCmdBytes);
         outputStream.flush();
 
-        byte[] bytes = new byte[102400];
-        int length = inputStream.read(bytes);
-        String authResult = new String(bytes, 0, length, charset);
+        resetByteBuffer();
+        int length = inputStream.read(byteBuffer);
+        String authResult = new String(byteBuffer, 0, length, charset);
         logger.info(authResult);
 
         //SELECT dbIndex
@@ -176,9 +179,9 @@ public class RedisOperationService {
         outputStream.write(selectCmdBytes);
         outputStream.flush();
 
-        bytes = new byte[102400];
-        length = inputStream.read(bytes);
-        String selectResult = new String(bytes, 0, length, charset);
+        resetByteBuffer();
+        length = inputStream.read(byteBuffer);
+        String selectResult = new String(byteBuffer, 0, length, charset);
         logger.info(selectResult);
 
         //COMMAND
@@ -186,14 +189,20 @@ public class RedisOperationService {
         outputStream.write(commandBytes);
         outputStream.flush();
 
-        bytes = new byte[102400];
-        length = inputStream.read(bytes);
-        String result = new String(bytes, 0, length, charset);
+        resetByteBuffer();
+        length = inputStream.read(byteBuffer);
+        String result = new String(byteBuffer, 0, length, charset);
         logger.info(String.format("\ncommand:\n%s\nresult:\n%s", new String(commandBytes, charset), result));
 
         outputStream.close();
         inputStream.close();
 
         return result;
+    }
+
+    private void resetByteBuffer() {
+        for (int i = 0; i < byteBuffer.length; ++i) {
+            byteBuffer[i] = (byte) 0;
+        }
     }
 }

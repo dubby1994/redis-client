@@ -77,6 +77,7 @@ public class Controller {
             return;
         }
         redisOperationService.query(commandInput.getText(), queryResult);
+        System.gc();
     }
 
     private void connect() {
