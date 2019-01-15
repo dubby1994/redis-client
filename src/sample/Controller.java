@@ -70,9 +70,11 @@ public class Controller {
         } else {
             connect();
         }
-        commandInput.setOnKeyTyped(e -> {
+        commandInput.setOnKeyPressed(e -> {
             if (e.isControlDown()) {
-                doQuery();
+                if ("X".equals(e.getText()) || "x".equals(e.getText())) {
+                    doQuery();
+                }
             }
         });
     }
