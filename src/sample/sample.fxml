@@ -16,19 +16,14 @@
                 <Font size="14.0" />
             </font>
         </TextField>
-        <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#handleConnectButtonAction" text="connect/disconnect">
+        <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#handleConnectButtonAction" text="连接">
             <font>
                 <Font size="14.0" />
             </font>
         </Button>
-        <TextField fx:id="redidConnectStatusOutput" editable="false" prefHeight="10.0" prefWidth="200.0" text="not connected">
-            <font>
-                <Font size="14.0" />
-            </font>
-        </TextField>
     </HBox>
 
-    <TextArea fx:id="commandInput" prefHeight="230.0" prefWidth="1000.0" promptText="redis command" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+    <TextArea fx:id="commandInput" wrapText="true" prefHeight="230.0" prefWidth="1000.0" promptText="redis command" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
         <font>
             <Font name="System Bold" size="14.0" />
         </font>

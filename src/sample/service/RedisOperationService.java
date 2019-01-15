@@ -104,7 +104,7 @@ public class RedisOperationService {
         outputStream.close();
         inputStream.close();
 
-        return !StringUtil.isEmpty(result) && result.startsWith("+PONG");
+        return !StringUtil.isEmpty(result);
     }
 
     public void query(String command, TextArea queryResult) {

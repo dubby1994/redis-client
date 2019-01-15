@@ -3,8 +3,12 @@ package sample;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.paint.Color;
 import sample.context.RedisConnectionStatus;
 import sample.service.RedisOperationService;
 import sample.util.LogUtil;
@@ -27,13 +31,13 @@ public class Controller {
     private TextField redisURIInput;
 
     @FXML
-    private TextField redidConnectStatusOutput;
-
-    @FXML
     private TextArea commandInput;
 
     @FXML
     private TextArea queryResult;
+
+    @FXML
+    private Button connectBtn;
 
     private final RedisConnectionStatus connectionStatus = new RedisConnectionStatus();
 
@@ -50,16 +54,16 @@ public class Controller {
         refreshStatusExecutor.scheduleAtFixedRate(() -> {
             if (connectionStatus.isConnected()) {
                 Platform.runLater(() -> {
-                    redisURIInput.setEditable(false);
-                    redidConnectStatusOutput.setText("connected");
+                    redisURIInput.setDisable(true);
+                    connectBtn.setText("断开连接");
                 });
             } else {
                 Platform.runLater(() -> {
-                    redisURIInput.setEditable(true);
-                    redidConnectStatusOutput.setText("unconnected");
+                    redisURIInput.setDisable(false);
+                    connectBtn.setText("连接");
                 });
             }
-        }, 1, 1, TimeUnit.SECONDS);
+        }, 100, 100, TimeUnit.MILLISECONDS);
     }
 
     @FXML
