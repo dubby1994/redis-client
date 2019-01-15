@@ -33,8 +33,8 @@ public class RedisOperationService {
     private String password;
     private int dbIndex;
 
-    //500MB
-    private final byte[] byteBuffer = new byte[1024 * 1024 * 500];
+    //100MB
+    private final byte[] byteBuffer = new byte[1024 * 1024 * 100];
 
     public RedisOperationService(URI uri) {
         host = uri.getHost();
