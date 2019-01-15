@@ -69,15 +69,18 @@ public class RedisOperationService {
         InputStream inputStream = socket.getInputStream();
 
         //AUTH password
-        String authCmd = "AUTH " + password;
-        byte[] authCmdBytes = RedisCommandParser.parse(authCmd);
-        outputStream.write(authCmdBytes);
-        outputStream.flush();
+        int length = 0;
+        if (!StringUtil.isEmpty(password)) {
+            String authCmd = "AUTH " + password;
+            byte[] authCmdBytes = RedisCommandParser.parse(authCmd);
+            outputStream.write(authCmdBytes);
+            outputStream.flush();
 
-        resetByteBuffer();
-        int length = inputStream.read(byteBuffer);
-        String authResult = new String(byteBuffer, 0, length, charset);
-        logger.info(authResult);
+            resetByteBuffer();
+            length = inputStream.read(byteBuffer);
+            String authResult = new String(byteBuffer, 0, length, charset);
+            logger.info(authResult);
+        }
 
         //SELECT dbIndex
         String selectCmd = "SELECT " + dbIndex;
