@@ -1,6 +1,7 @@
 .idea
 *.iml
 *.jar
+*.log
 logs/
 lib/
 .DS_Store

@@ -18,15 +18,24 @@ public class LogUtil {
         FileHandler fileHandler = null;
 
         try {
-            fileHandler = new FileHandler("D:\\log\\java-fx.log", 0, 1, false);
+            fileHandler = new FileHandler("redis-client.log", 0, 1, true);
+            fileHandler.setLevel(Level.INFO);
+            fileHandler.setFormatter(new SimpleFormatter());
+            logger.addHandler(fileHandler);
+            logger.setLevel(Level.INFO);
+            logger.info("===================================================================application started===================================================================");
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        fileHandler.setLevel(Level.INFO);
-        fileHandler.setFormatter(new SimpleFormatter());
-        logger.addHandler(fileHandler);
-        logger.setLevel(Level.INFO);
+        FileHandler finalFileHandler = fileHandler;
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                logger.info("===================================================================application closed===================================================================");
+                finalFileHandler.close();
+            }
+        });
     }
 
 }
