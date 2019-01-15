@@ -6,9 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import sample.context.RedisConnectionStatus;
 import sample.service.RedisOperationService;
 import sample.util.LogUtil;
@@ -73,10 +70,19 @@ public class Controller {
         } else {
             connect();
         }
+        commandInput.setOnKeyTyped(e -> {
+            if (e.isControlDown()) {
+                doQuery();
+            }
+        });
     }
 
     @FXML
     protected void handleQueryButtonAction(ActionEvent event) {
+        doQuery();
+    }
+
+    private void doQuery() {
         if (redisOperationService == null) {
             return;
         }
