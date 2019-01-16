@@ -72,7 +72,7 @@ public class Controller {
         }
         commandInput.setOnKeyPressed(e -> {
             if (e.isControlDown()) {
-                if ("X".equals(e.getText()) || "x".equals(e.getText())) {
+                if ("Q".equals(e.getText()) || "q".equals(e.getText())) {
                     doQuery();
                 }
             }
@@ -84,7 +84,7 @@ public class Controller {
         doQuery();
     }
 
-    private void doQuery() {
+    private synchronized void doQuery() {
         if (redisOperationService == null) {
             return;
         }

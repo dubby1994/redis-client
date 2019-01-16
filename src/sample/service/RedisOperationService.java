@@ -4,6 +4,7 @@
  */
 package sample.service;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import sample.constant.RedisCommandConstant;
@@ -33,8 +34,7 @@ public class RedisOperationService {
     private String password;
     private int dbIndex;
 
-    //100MB
-    private final byte[] byteBuffer = new byte[1024 * 1024 * 100];
+    private static final int UNIT_SIZE = 500 * 1024 * 1024;
 
     public RedisOperationService(URI uri) {
         host = uri.getHost();
@@ -67,7 +67,7 @@ public class RedisOperationService {
 
         OutputStream outputStream = socket.getOutputStream();
         InputStream inputStream = socket.getInputStream();
-
+        byte[] byteBuffer = new byte[UNIT_SIZE];
         //AUTH password
         int length = 0;
         if (!StringUtil.isEmpty(password)) {
@@ -76,7 +76,7 @@ public class RedisOperationService {
             outputStream.write(authCmdBytes);
             outputStream.flush();
 
-            resetByteBuffer();
+
             length = inputStream.read(byteBuffer);
             String authResult = new String(byteBuffer, 0, length, charset);
             logger.info(authResult);
@@ -88,7 +88,7 @@ public class RedisOperationService {
         outputStream.write(selectCmdBytes);
         outputStream.flush();
 
-        resetByteBuffer();
+        byteBuffer = new byte[UNIT_SIZE];
         length = inputStream.read(byteBuffer);
         String selectResult = new String(byteBuffer, 0, length, charset);
         logger.info(selectResult);
@@ -99,7 +99,7 @@ public class RedisOperationService {
         outputStream.write(pingCmdBytes);
         outputStream.flush();
 
-        resetByteBuffer();
+        byteBuffer = new byte[UNIT_SIZE];
         length = inputStream.read(byteBuffer);
         String result = new String(byteBuffer, 0, length, charset);
         logger.info(result);
@@ -159,7 +159,7 @@ public class RedisOperationService {
         socket.setTcpNoDelay(true);
         socket.setSoLinger(true, 0);
         socket.connect(new InetSocketAddress(host, port), 10 * 1000);
-        socket.setSoTimeout(10 * 1000);
+        socket.setSoTimeout(30 * 1000);
 
 
         OutputStream outputStream = socket.getOutputStream();
@@ -171,7 +171,7 @@ public class RedisOperationService {
         outputStream.write(authCmdBytes);
         outputStream.flush();
 
-        resetByteBuffer();
+        byte[] byteBuffer = new byte[UNIT_SIZE];
         int length = inputStream.read(byteBuffer);
         String authResult = new String(byteBuffer, 0, length, charset);
         logger.info(authResult);
@@ -182,7 +182,7 @@ public class RedisOperationService {
         outputStream.write(selectCmdBytes);
         outputStream.flush();
 
-        resetByteBuffer();
+        byteBuffer = new byte[UNIT_SIZE];
         length = inputStream.read(byteBuffer);
         String selectResult = new String(byteBuffer, 0, length, charset);
         logger.info(selectResult);
@@ -192,20 +192,25 @@ public class RedisOperationService {
         outputStream.write(commandBytes);
         outputStream.flush();
 
-        resetByteBuffer();
-        length = inputStream.read(byteBuffer);
-        String result = new String(byteBuffer, 0, length, charset);
+        ByteOutputStream byteOutputStream = new ByteOutputStream();
+        while (true) {
+            byteBuffer = new byte[UNIT_SIZE];
+            length = inputStream.read(byteBuffer);
+            if (length == -1) {
+                break;
+            }
+            byteOutputStream.write(byteBuffer, 0, length);
+            if (length < UNIT_SIZE) {
+                break;
+            }
+        }
+
+        String result = byteOutputStream.toString();
         logger.info(String.format("\ncommand:\n%s\nresult:\n%s", new String(commandBytes, charset), result));
 
         outputStream.close();
         inputStream.close();
 
         return result;
-    }
-
-    private void resetByteBuffer() {
-        for (int i = 0; i < byteBuffer.length; ++i) {
-            byteBuffer[i] = (byte) 0;
-        }
     }
 }
