@@ -205,7 +205,7 @@ public class RedisOperationService {
             }
         }
 
-        String result = byteOutputStream.toString();
+        String result = new String(byteOutputStream.getBytes(), 0, byteOutputStream.getCount(), charset);
         logger.info(String.format("\ncommand:\n%s\nresult:\n%s", new String(commandBytes, charset), result));
 
         outputStream.close();
