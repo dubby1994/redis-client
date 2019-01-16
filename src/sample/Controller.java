@@ -14,6 +14,7 @@ import sample.util.StringUtil;
 import java.net.URI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
@@ -35,6 +36,11 @@ public class Controller {
 
     @FXML
     private Button connectBtn;
+
+    @FXML
+    private Button queryBtn;
+
+    private Semaphore semaphore = new Semaphore(1);
 
     private final RedisConnectionStatus connectionStatus = new RedisConnectionStatus();
 
@@ -84,12 +90,25 @@ public class Controller {
         doQuery();
     }
 
-    private synchronized void doQuery() {
-        if (redisOperationService == null) {
+    private void doQuery() {
+        if (!semaphore.tryAcquire()) {
             return;
         }
-        redisOperationService.query(commandInput.getText(), queryResult);
-        System.gc();
+
+        long startTime = System.currentTimeMillis();
+        try {
+            queryBtn.setDisable(true);
+            queryBtn.setText("Loading...");
+            if (redisOperationService == null) {
+                return;
+            }
+            redisOperationService.query(commandInput.getText(), queryResult);
+            System.gc();
+        } finally {
+            queryBtn.setDisable(false);
+            queryBtn.setText("查询（上次查询耗时:）" + (System.currentTimeMillis() - startTime) + "ms");
+            semaphore.release();
+        }
     }
 
     private void connect() {
