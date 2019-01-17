@@ -1,7 +1,7 @@
-package sample.util;
+package cn.dubby.redis.client.util;
 
-import sample.constant.RESPConstant;
-import sample.constant.RedisCommandConstant;
+import cn.dubby.redis.client.constant.RESPConstant;
+import cn.dubby.redis.client.constant.RedisCommandConstant;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

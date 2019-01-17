@@ -1,4 +1,4 @@
-package sample.constant;
+package cn.dubby.redis.client.constant;
 
 /**
  * @author dubby

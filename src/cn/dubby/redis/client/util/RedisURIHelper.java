@@ -2,7 +2,7 @@
  * @author daoxuan
  * @date 2018/12/4 14:11
  */
-package sample.util;
+package cn.dubby.redis.client.util;
 
 import java.net.URI;
 

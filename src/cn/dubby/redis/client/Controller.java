@@ -1,26 +1,28 @@
-package sample;
+package cn.dubby.redis.client;
 
+import cn.dubby.redis.client.context.RedisConnectionStatus;
+import cn.dubby.redis.client.service.RedisOperationService;
+import cn.dubby.redis.client.util.StringUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import sample.context.RedisConnectionStatus;
-import sample.service.RedisOperationService;
-import sample.util.LogUtil;
-import sample.util.StringUtil;
+import javafx.scene.input.KeyEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class Controller {
 
-    private static final Logger logger = LogUtil.logger;
+    private static final Logger logger = LoggerFactory.getLogger(Controller.class);
 
     /**
      * redis://:password@127.0.0.1:6379/0
@@ -46,6 +48,12 @@ public class Controller {
 
     private RedisOperationService redisOperationService;
 
+    private EventHandler<KeyEvent> queryEventHandler = event -> {
+        if ("Q".equals(event.getText()) || "q".equals(event.getText())) {
+            doQuery();
+        }
+    };
+
     private static final ScheduledExecutorService refreshStatusExecutor = Executors.newSingleThreadScheduledExecutor(runnable -> {
         Thread thread = new Thread(runnable);
         thread.setDaemon(true);
@@ -59,11 +67,13 @@ public class Controller {
                 Platform.runLater(() -> {
                     redisURIInput.setDisable(true);
                     connectBtn.setText("断开连接");
+                    queryBtn.setDisable(false);
                 });
             } else {
                 Platform.runLater(() -> {
                     redisURIInput.setDisable(false);
                     connectBtn.setText("连接");
+                    queryBtn.setDisable(true);
                 });
             }
         }, 100, 100, TimeUnit.MILLISECONDS);
@@ -76,13 +86,6 @@ public class Controller {
         } else {
             connect();
         }
-        commandInput.setOnKeyPressed(e -> {
-            if (e.isControlDown()) {
-                if ("Q".equals(e.getText()) || "q".equals(e.getText())) {
-                    doQuery();
-                }
-            }
-        });
     }
 
     @FXML
@@ -102,11 +105,11 @@ public class Controller {
             if (redisOperationService == null) {
                 return;
             }
-            redisOperationService.query(commandInput.getText(), queryResult);
+            redisOperationService.query(commandInput.getText());
             System.gc();
         } finally {
             queryBtn.setDisable(false);
-            queryBtn.setText("查询（上次查询耗时:）" + (System.currentTimeMillis() - startTime) + "ms");
+            queryBtn.setText("查询");
             semaphore.release();
         }
     }
@@ -121,16 +124,17 @@ public class Controller {
         try {
             URI uri = new URI(redisURI.trim());
             connectionStatus.setUri(redisURI.trim());
-            redisOperationService = new RedisOperationService(uri);
-            redisOperationService.checkRedisURI(connectionStatus);
-            redisOperationService.query("INFO", queryResult);
+            redisOperationService = new RedisOperationService(uri, connectionStatus, queryResult);
+            redisOperationService.connect();
+            commandInput.setOnKeyPressed(queryEventHandler);
         } catch (Exception e) {
-            logger.severe(e.getMessage());
+            logger.error(e.getMessage());
         }
     }
 
     private void disconnect() {
-        connectionStatus.setConnected(false);
+        redisOperationService.disconnect();
+        commandInput.setOnKeyPressed(queryEventHandler);
     }
 
 }

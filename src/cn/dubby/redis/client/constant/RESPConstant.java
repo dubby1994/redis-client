@@ -2,7 +2,7 @@
  * @author daoxuan
  * @date 2018/12/4 14:52
  */
-package sample.constant;
+package cn.dubby.redis.client.constant;
 
 public class RESPConstant {
 

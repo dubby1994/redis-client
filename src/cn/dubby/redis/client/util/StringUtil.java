@@ -2,7 +2,7 @@
  * @author daoxuan
  * @date 2018/12/4 11:13
  */
-package sample.util;
+package cn.dubby.redis.client.util;
 
 public class StringUtil {
 
