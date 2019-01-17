@@ -2,6 +2,7 @@ package cn.dubby.redis.client;
 
 import cn.dubby.redis.client.context.RedisConnectionStatus;
 import cn.dubby.redis.client.service.RedisOperationService;
+import cn.dubby.redis.client.util.FileUtil;
 import cn.dubby.redis.client.util.StringUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -61,7 +62,7 @@ public class Controller {
         return thread;
     });
 
-    public Controller() {
+    public void init() {
         refreshStatusExecutor.scheduleAtFixedRate(() -> {
             if (connectionStatus.isConnected()) {
                 Platform.runLater(() -> {
@@ -77,6 +78,12 @@ public class Controller {
                 });
             }
         }, 100, 100, TimeUnit.MILLISECONDS);
+        redisURIInput.setText(FileUtil.readRedisUTI());
+    }
+
+    public void destroy() {
+        refreshStatusExecutor.shutdownNow();
+        redisOperationService.destroy();
     }
 
     @FXML
@@ -98,7 +105,6 @@ public class Controller {
             return;
         }
 
-        long startTime = System.currentTimeMillis();
         try {
             queryBtn.setDisable(true);
             queryBtn.setText("Loading...");
@@ -127,6 +133,7 @@ public class Controller {
             redisOperationService = new RedisOperationService(uri, connectionStatus, queryResult);
             redisOperationService.connect();
             commandInput.setOnKeyPressed(queryEventHandler);
+            FileUtil.saveRedisUTI(redisURI.trim());
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

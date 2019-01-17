@@ -76,6 +76,15 @@ public class RedisOperationService {
         this.queryResult = queryResult;
     }
 
+    public void destroy() {
+        if (eventExecutors != null) {
+            eventExecutors.shutdownGracefully();
+        }
+        if (executorService != null) {
+            executorService.shutdownNow();
+        }
+    }
+
     public void connect() {
         new Thread(() -> {
             try {
