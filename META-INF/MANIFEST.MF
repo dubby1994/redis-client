@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+JavaFX-Application-Class: cn.dubby.redis.client.Main
+JavaFX-Class-Path: lib
+Class-Path: lib
+Main-Class: cn.dubby.redis.client.Main
+
