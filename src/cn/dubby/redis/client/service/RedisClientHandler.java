@@ -39,7 +39,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
             children.add(new FullBulkStringRedisMessage(ByteBufUtil.writeUtf8(ctx.alloc(), cmdString)));
         }
         RedisMessage request = new ArrayRedisMessage(children);
-        ctx.write(request, promise);
+        ctx.writeAndFlush(request, promise);
     }
 
     @Override

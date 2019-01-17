@@ -118,7 +118,6 @@ public class Controller {
                 return;
             }
             redisOperationService.query(commandInput.getText());
-            System.gc();
         } finally {
             queryBtn.setDisable(false);
             queryBtn.setText("查询");
