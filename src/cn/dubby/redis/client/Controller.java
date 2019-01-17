@@ -78,12 +78,18 @@ public class Controller {
                 });
             }
         }, 100, 100, TimeUnit.MILLISECONDS);
-        redisURIInput.setText(FileUtil.readRedisUTI());
+        redisURIInput.setText(FileUtil.readRedisURI());
+        commandInput.setText(FileUtil.readRedisCMD());
     }
 
     public void destroy() {
-        refreshStatusExecutor.shutdownNow();
-        redisOperationService.destroy();
+        FileUtil.saveRedisCMD(commandInput.getText());
+        if (redisOperationService != null) {
+            redisOperationService.destroy();
+        }
+        if (refreshStatusExecutor != null) {
+            refreshStatusExecutor.shutdownNow();
+        }
     }
 
     @FXML
@@ -127,13 +133,14 @@ public class Controller {
             return;
         }
 
+        logger.info("try to connect:{}", redisURI.trim());
         try {
             URI uri = new URI(redisURI.trim());
             connectionStatus.setUri(redisURI.trim());
             redisOperationService = new RedisOperationService(uri, connectionStatus, queryResult);
             redisOperationService.connect();
             commandInput.setOnKeyPressed(queryEventHandler);
-            FileUtil.saveRedisUTI(redisURI.trim());
+            FileUtil.saveRedisURI(redisURI.trim());
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

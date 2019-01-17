@@ -93,7 +93,7 @@ public class RedisOperationService {
                     connectionStatus.setConnected(true);
                 }
             } catch (Exception e) {
-                logger.error(String.format("doCheckRedisURI %s", e.toString()));
+                logger.error("doCheckRedisURI", e);
             }
         }).start();
     }
@@ -110,6 +110,7 @@ public class RedisOperationService {
                 ChannelFuture lastWriteFuture = channel.writeAndFlush(realCmd);
                 lastWriteFuture.addListener((GenericFutureListener<ChannelFuture>) future -> {
                     if (!future.isSuccess()) {
+                        logger.error("query error");
                         Platform.runLater(() -> {
                             queryResult.setText("command query error");
                         });
@@ -117,7 +118,7 @@ public class RedisOperationService {
                 });
                 logger.info("execute:{}", realCmd);
             } catch (Exception e) {
-                logger.error("query command:{}, error:{}", command, e);
+                logger.error("query command:{}", command, e);
             }
         });
     }
