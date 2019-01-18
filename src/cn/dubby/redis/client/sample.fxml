@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="830" minWidth="1000" prefHeight="830" prefWidth="1000"
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="930" minWidth="1000" prefHeight="930" prefWidth="1000"
             xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="cn.dubby.redis.client.Controller">
 
@@ -24,7 +24,7 @@
         </Button>
     </HBox>
 
-    <TextArea fx:id="commandInput" wrapText="true" prefHeight="230.0" prefWidth="1000.0" promptText="redis command"
+    <TextArea fx:id="commandInput" wrapText="true" prefHeight="330.0" prefWidth="1000.0" promptText="redis command"
               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
         <font>
             <Font name="System Bold" size="14.0"/>
@@ -32,7 +32,7 @@
     </TextArea>
 
     <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="查询"
-            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="270.0">
+            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
         <font>
             <Font size="14.0"/>
         </font>
@@ -40,7 +40,7 @@
 
     <TextArea fx:id="queryResult" editable="false" prefHeight="600.0" prefWidth="1000.0" promptText="redis query result"
               text="redis query result" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="300.0">
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="400.0">
         <font>
             <Font name="System Italic" size="14.0"/>
         </font>

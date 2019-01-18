@@ -24,7 +24,7 @@ public class Main extends Application {
         fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
         Parent root = fxmlLoader.load();//FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Redis Manager");
-        primaryStage.setScene(new Scene(root, 1000, 800));
+        primaryStage.setScene(new Scene(root, 1000, 900));
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/redis.png")));
         primaryStage.show();
 

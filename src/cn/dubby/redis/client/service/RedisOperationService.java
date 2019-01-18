@@ -220,7 +220,7 @@ public class RedisOperationService {
         String[] strings = command.split("\n");
         int i = 0;
         for (String str : strings) {
-            if (str.startsWith(RedisCommandConstant.COMMENT)) {
+            if (str.startsWith(RedisCommandConstant.COMMENT) || StringUtil.isEmpty(str)) {
                 continue;
             }
             if (i == 0) {

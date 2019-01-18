@@ -78,6 +78,7 @@ public class Controller {
                     queryBtn.setDisable(true);
                 });
             }
+            FileUtil.saveRedisCMD(commandInput.getText());
         }, 100, 100, TimeUnit.MILLISECONDS);
         redisURIInput.setText(FileUtil.readRedisURI());
         commandInput.setText(FileUtil.readRedisCMD());
