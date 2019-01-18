@@ -1,4 +1,4 @@
-<configuration scan="true" scanPeriod="30 seconds" packagingData="true">
+<configuration>
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
         <Delay>10000</Delay>
