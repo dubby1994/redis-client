@@ -62,7 +62,7 @@ public class RedisOperationService {
 
     private int dbIndex;
 
-    private RedisConnectionStatus connectionStatus;
+    RedisConnectionStatus connectionStatus;
 
     private TextArea queryResult;
 
@@ -181,7 +181,7 @@ public class RedisOperationService {
         return !StringUtil.isEmpty(result);
     }
 
-    private void doConnect() throws InterruptedException, ExecutionException {
+    public void doConnect() throws InterruptedException, ExecutionException {
         eventExecutors = new NioEventLoopGroup(1);
 
         Bootstrap b = new Bootstrap();
@@ -195,7 +195,7 @@ public class RedisOperationService {
                         p.addLast(new RedisBulkStringAggregator());
                         p.addLast(new RedisArrayAggregator());
                         p.addLast(new RedisEncoder());
-                        p.addLast(new RedisClientHandler(queryResult));
+                        p.addLast(new RedisClientHandler(queryResult, RedisOperationService.this));
                     }
                 });
         b.option(ChannelOption.TCP_NODELAY, true);

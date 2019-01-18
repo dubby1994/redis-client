@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.channel.EventLoop;
 import io.netty.handler.codec.CodecException;
 import io.netty.handler.codec.redis.ArrayRedisMessage;
 import io.netty.handler.codec.redis.ErrorRedisMessage;
@@ -20,6 +21,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 public class RedisClientHandler extends ChannelDuplexHandler {
 
@@ -27,8 +30,11 @@ public class RedisClientHandler extends ChannelDuplexHandler {
 
     private TextArea queryResult;
 
-    public RedisClientHandler(TextArea queryResult) {
+    private RedisOperationService redisOperationService;
+
+    public RedisClientHandler(TextArea queryResult, RedisOperationService redisOperationService) {
         this.queryResult = queryResult;
+        this.redisOperationService = redisOperationService;
     }
 
     @Override
@@ -60,6 +66,31 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         Platform.runLater(() -> {
             queryResult.setText(cause.getMessage());
         });
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        if (redisOperationService.connectionStatus.isConnected()) {
+            Platform.runLater(() -> {
+                queryResult.setText("哦哦，我们和Redis的连接断开了，请检查网络是否不稳定，10s后我们也会尝试帮你重连");
+            });
+            final EventLoop eventLoop = ctx.channel().eventLoop();
+            eventLoop.schedule(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        redisOperationService.doConnect();
+                        logger.error("reconnect success");
+                        Platform.runLater(() -> {
+                            queryResult.setText("刚才和Redis的连接断开了，不过我们帮你重连了");
+                        });
+                    } catch (Exception e) {
+                        logger.error("reconnect fail", e);
+                    }
+                }
+            }, 10L, TimeUnit.SECONDS);
+        }
+        super.channelInactive(ctx);
     }
 
     private static void printAggregatedRedisResponse(RedisMessage msg, StringBuilder sb) {
