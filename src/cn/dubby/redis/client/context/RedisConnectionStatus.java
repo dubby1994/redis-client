@@ -10,6 +10,16 @@ public class RedisConnectionStatus {
 
     private String uri;
 
+    private boolean keepAlive;
+
+    public boolean isKeepAlive() {
+        return keepAlive;
+    }
+
+    public void setKeepAlive(boolean keepAlive) {
+        this.keepAlive = keepAlive;
+    }
+
     public synchronized boolean isConnected() {
         return connected;
     }
@@ -31,6 +41,7 @@ public class RedisConnectionStatus {
         return "RedisConnectionStatus{" +
                 "connected=" + connected +
                 ", uri='" + uri + '\'' +
+                ", keepAlive=" + keepAlive +
                 '}';
     }
 }

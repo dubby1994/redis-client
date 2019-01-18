@@ -4,12 +4,12 @@
  */
 package cn.dubby.redis.client.constant;
 
-public class RESPConstant {
+public interface RESPConstant {
 
-    public static final byte DOLLAR_BYTE = '$';
-    public static final byte ASTERISK_BYTE = '*';
-    public static final byte PLUS_BYTE = '+';
-    public static final byte MINUS_BYTE = '-';
-    public static final byte COLON_BYTE = ':';
+    byte DOLLAR_BYTE = '$';
+    byte ASTERISK_BYTE = '*';
+    byte PLUS_BYTE = '+';
+    byte MINUS_BYTE = '-';
+    byte COLON_BYTE = ':';
 
 }

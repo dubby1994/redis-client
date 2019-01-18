@@ -17,6 +17,7 @@ public class RedisCommandParser {
     private static final Charset charset = Charset.forName("UTF-8");
 
     public static byte[] parse(String inputCommand) throws IOException {
+        inputCommand = transformCommand(inputCommand);
         if (StringUtil.isEmpty(inputCommand)) {
             inputCommand = RedisCommandConstant.PING;
         }
@@ -51,6 +52,30 @@ public class RedisCommandParser {
         }
 
         return stream.toByteArray();
+    }
+
+    public static String transformCommand(String command) {
+        if (StringUtil.isEmpty(command)) {
+            return "INFO";
+        }
+
+        StringBuilder sb = new StringBuilder();
+
+        String[] strings = command.split("\n");
+        int i = 0;
+        for (String str : strings) {
+            if (str.startsWith(RedisCommandConstant.COMMENT) || StringUtil.isEmpty(str)) {
+                continue;
+            }
+            if (i == 0) {
+                sb.append(str);
+            } else {
+                sb.append(str);
+                sb.append("\n");
+            }
+            ++i;
+        }
+        return sb.toString();
     }
 
 

@@ -1,8 +1,7 @@
 package cn.dubby.redis.client.service;
 
-import cn.dubby.redis.client.constant.RedisCommandConstant;
 import cn.dubby.redis.client.context.RedisConnectionStatus;
-import cn.dubby.redis.client.util.RedisCommandParser;
+import cn.dubby.redis.client.util.CheckRedisURIUtil;
 import cn.dubby.redis.client.util.RedisURIHelper;
 import cn.dubby.redis.client.util.StringUtil;
 import io.netty.bootstrap.Bootstrap;
@@ -19,30 +18,21 @@ import io.netty.handler.codec.redis.RedisArrayAggregator;
 import io.netty.handler.codec.redis.RedisBulkStringAggregator;
 import io.netty.handler.codec.redis.RedisDecoder;
 import io.netty.handler.codec.redis.RedisEncoder;
-import io.netty.util.CharsetUtil;
 import io.netty.util.concurrent.GenericFutureListener;
 import javafx.application.Platform;
 import javafx.scene.control.TextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.net.URI;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 public class RedisOperationService {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisOperationService.class);
-
-    private static final int UNIT_SIZE = 1024 * 1024;
 
     private static final ExecutorService executorService = Executors.newFixedThreadPool(1, new ThreadFactory() {
         @Override
@@ -83,16 +73,16 @@ public class RedisOperationService {
         if (eventExecutors != null) {
             eventExecutors.shutdownGracefully();
         }
-        if (executorService != null) {
-            executorService.shutdownNow();
-        }
+        executorService.shutdownNow();
     }
 
     public void connect() {
         new Thread(() -> {
             try {
-                if (doCheckRedisURI()) {
-                    doConnect();
+                if (CheckRedisURIUtil.checkRedisURI(host, port, password, dbIndex)) {
+                    if (connectionStatus.isKeepAlive()) {
+                        doConnectWithNetty();
+                    }
                     connectionStatus.setConnected(true);
                 }
             } catch (Exception e) {
@@ -107,81 +97,29 @@ public class RedisOperationService {
     }
 
     public void query(String command) {
-        executorService.submit(() -> {
-            String realCmd = transformCommand(command);
-            try {
-                ChannelFuture lastWriteFuture = channel.writeAndFlush(realCmd);
-                lastWriteFuture.addListener((GenericFutureListener<ChannelFuture>) future -> {
-                    if (!future.isSuccess()) {
-                        logger.error("query error");
-                        Platform.runLater(() -> {
-                            queryResult.setText("command query error");
-                        });
-                    }
-                });
-                logger.info("execute:{}", realCmd);
-            } catch (Exception e) {
-                logger.error("query command:{}", realCmd, e);
-            }
-        });
-    }
+        if (connectionStatus.isKeepAlive()) {
+            executorService.submit(() -> {
+                try {
+                    ChannelFuture lastWriteFuture = channel.writeAndFlush(command);
+                    lastWriteFuture.addListener((GenericFutureListener<ChannelFuture>) future -> {
+                        if (!future.isSuccess()) {
+                            logger.error("query command:{}", command);
+                            Platform.runLater(() -> {
+                                queryResult.setText("query command error:" + command);
+                            });
+                        }
+                    });
+                    logger.info("query command:{}", command);
+                } catch (Exception e) {
+                    logger.error("query command:{}", command, e);
+                }
+            });
+        } else {
 
-    private boolean doCheckRedisURI() throws IOException {
-        Socket socket = new Socket();
-        socket.setReuseAddress(true);
-        socket.setKeepAlive(true);
-        socket.setTcpNoDelay(true);
-        socket.setSoLinger(true, 0);
-        socket.connect(new InetSocketAddress(host, port), 10 * 1000);
-        socket.setSoTimeout(10 * 1000);
-
-
-        OutputStream outputStream = socket.getOutputStream();
-        InputStream inputStream = socket.getInputStream();
-        byte[] byteBuffer = new byte[UNIT_SIZE];
-        //AUTH password
-        int length = 0;
-        if (!StringUtil.isEmpty(password)) {
-            String authCmd = "AUTH " + password;
-            byte[] authCmdBytes = RedisCommandParser.parse(authCmd);
-            outputStream.write(authCmdBytes);
-            outputStream.flush();
-
-
-            length = inputStream.read(byteBuffer);
-            String authResult = new String(byteBuffer, 0, length, CharsetUtil.UTF_8);
-            logger.info(authResult);
         }
-
-        //SELECT dbIndex
-        String selectCmd = "SELECT " + dbIndex;
-        byte[] selectCmdBytes = RedisCommandParser.parse(selectCmd);
-        outputStream.write(selectCmdBytes);
-        outputStream.flush();
-
-        byteBuffer = new byte[UNIT_SIZE];
-        length = inputStream.read(byteBuffer);
-        String selectResult = new String(byteBuffer, 0, length, CharsetUtil.UTF_8);
-        logger.info(selectResult);
-
-        //PING
-        String pingCmd = "PING";
-        byte[] pingCmdBytes = RedisCommandParser.parse(pingCmd);
-        outputStream.write(pingCmdBytes);
-        outputStream.flush();
-
-        byteBuffer = new byte[UNIT_SIZE];
-        length = inputStream.read(byteBuffer);
-        String result = new String(byteBuffer, 0, length, CharsetUtil.UTF_8);
-        logger.info(result);
-
-        outputStream.close();
-        inputStream.close();
-
-        return !StringUtil.isEmpty(result);
     }
 
-    public void doConnect() throws InterruptedException, ExecutionException {
+    private void doConnectWithNetty() throws InterruptedException, ExecutionException {
         eventExecutors = new NioEventLoopGroup(1);
 
         Bootstrap b = new Bootstrap();
@@ -208,29 +146,5 @@ public class RedisOperationService {
             query("AUTH " + password);
         }
         query("SELECT " + dbIndex);
-    }
-
-    private String transformCommand(String command) {
-        if (StringUtil.isEmpty(command)) {
-            return "INFO";
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        String[] strings = command.split("\n");
-        int i = 0;
-        for (String str : strings) {
-            if (str.startsWith(RedisCommandConstant.COMMENT) || StringUtil.isEmpty(str)) {
-                continue;
-            }
-            if (i == 0) {
-                sb.append(str);
-            } else {
-                sb.append(str);
-                sb.append("\n");
-            }
-            ++i;
-        }
-        return sb.toString();
     }
 }

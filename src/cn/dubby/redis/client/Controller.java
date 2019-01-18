@@ -9,6 +9,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
@@ -43,6 +44,9 @@ public class Controller {
 
     @FXML
     private Button queryBtn;
+
+    @FXML
+    private CheckBox keepAliveCheckBox;
 
     private Semaphore semaphore = new Semaphore(1);
 
@@ -85,6 +89,7 @@ public class Controller {
     }
 
     public void destroy() {
+        disconnect();
         FileUtil.saveRedisCMD(commandInput.getText());
         if (redisOperationService != null) {
             redisOperationService.destroy();
@@ -140,6 +145,7 @@ public class Controller {
         try {
             URI uri = new URI(redisURI.trim());
             connectionStatus.setUri(redisURI.trim());
+            connectionStatus.setKeepAlive(keepAliveCheckBox.isSelected());
             redisOperationService = new RedisOperationService(uri, connectionStatus, queryResult);
             redisOperationService.connect();
             commandInput.setOnKeyPressed(queryEventHandler);
@@ -150,7 +156,9 @@ public class Controller {
     }
 
     private void disconnect() {
-        redisOperationService.disconnect();
+        if (redisOperationService != null) {
+            redisOperationService.disconnect();
+        }
         commandInput.setOnKeyPressed(queryEventHandler);
     }
 

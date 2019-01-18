@@ -17,7 +17,7 @@
     <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <FileNamePattern>redis-client-%d{yyyy-MM-dd}.log</FileNamePattern>
+            <FileNamePattern>log/redis-client-%d{yyyy-MM-dd}.log</FileNamePattern>
             <MaxHistory>30</MaxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>

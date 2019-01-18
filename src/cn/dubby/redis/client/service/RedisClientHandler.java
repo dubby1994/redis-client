@@ -75,18 +75,15 @@ public class RedisClientHandler extends ChannelDuplexHandler {
                 queryResult.setText("哦哦，我们和Redis的连接断开了，请检查网络是否不稳定，10s后我们也会尝试帮你重连");
             });
             final EventLoop eventLoop = ctx.channel().eventLoop();
-            eventLoop.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        redisOperationService.doConnect();
-                        logger.error("reconnect success");
-                        Platform.runLater(() -> {
-                            queryResult.setText("刚才和Redis的连接断开了，不过我们帮你重连了");
-                        });
-                    } catch (Exception e) {
-                        logger.error("reconnect fail", e);
-                    }
+            eventLoop.schedule(() -> {
+                try {
+                    redisOperationService.connect();
+                    logger.error("reconnect success");
+                    Platform.runLater(() -> {
+                        queryResult.setText("刚才和Redis的连接断开了，不过我们帮你重连了");
+                    });
+                } catch (Exception e) {
+                    logger.error("reconnect fail", e);
                 }
             }, 10L, TimeUnit.SECONDS);
         }
