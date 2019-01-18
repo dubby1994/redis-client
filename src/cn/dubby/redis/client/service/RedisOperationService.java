@@ -93,6 +93,8 @@ public class RedisOperationService {
                 if (CheckRedisURIUtil.checkRedisURI(host, port, password, dbIndex)) {
                     if (connectionStatus.isKeepAlive()) {
                         doConnectWithNetty();
+                    } else {
+                        query("INFO");
                     }
                     connectionStatus.setConnected(true);
                 }
