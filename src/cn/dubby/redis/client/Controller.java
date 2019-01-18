@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URI;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.Semaphore;
@@ -118,6 +119,8 @@ public class Controller {
                 return;
             }
             redisOperationService.query(commandInput.getText());
+        } catch (Exception e) {
+            logger.error("doQuery", e);
         } finally {
             queryBtn.setDisable(false);
             queryBtn.setText("查询");

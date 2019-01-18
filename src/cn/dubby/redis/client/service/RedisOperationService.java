@@ -32,8 +32,10 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
 
 public class RedisOperationService {
@@ -106,8 +108,8 @@ public class RedisOperationService {
 
     public void query(String command) {
         executorService.submit(() -> {
+            String realCmd = transformCommand(command);
             try {
-                String realCmd = transformCommand(command);
                 ChannelFuture lastWriteFuture = channel.writeAndFlush(realCmd);
                 lastWriteFuture.addListener((GenericFutureListener<ChannelFuture>) future -> {
                     if (!future.isSuccess()) {
@@ -119,7 +121,7 @@ public class RedisOperationService {
                 });
                 logger.info("execute:{}", realCmd);
             } catch (Exception e) {
-                logger.error("query command:{}", command, e);
+                logger.error("query command:{}", realCmd, e);
             }
         });
     }
@@ -179,7 +181,7 @@ public class RedisOperationService {
         return !StringUtil.isEmpty(result);
     }
 
-    private void doConnect() throws InterruptedException {
+    private void doConnect() throws InterruptedException, ExecutionException {
         eventExecutors = new NioEventLoopGroup(1);
 
         Bootstrap b = new Bootstrap();
@@ -197,6 +199,7 @@ public class RedisOperationService {
                     }
                 });
         b.option(ChannelOption.TCP_NODELAY, true);
+        b.option(ChannelOption.SO_KEEPALIVE, true);
 
         channel = b.connect(host, port).sync().channel();
         if (StringUtil.isEmpty(password)) {
@@ -204,6 +207,7 @@ public class RedisOperationService {
         } else {
             query("AUTH " + password);
         }
+        query("SELECT " + dbIndex);
     }
 
     private String transformCommand(String command) {
