@@ -6,6 +6,6 @@ package cn.dubby.redis.client.constant;
  */
 public interface RedisQueryConstant {
 
-    int UNIT_SIZE = 1024 * 1024;
+    int UNIT_SIZE = 1024 * 1024 * 100;
 
 }

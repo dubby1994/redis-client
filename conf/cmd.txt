@@ -6,8 +6,8 @@
 
 //mget user_with_username_by_mallId:7115873 user_with_username_by_mallId:236902 user_with_username_by_mallId:1
 
-//get user_with_username_by_mallId:7115873
+get user_with_username_by_mallId:7115873
 
 //get user_with_username_by_mallId:9198060
 
-get SEND_VALID_CODE_TIMES_18818218992
+//get SEND_VALID_CODE_TIMES_18818218992
