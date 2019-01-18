@@ -74,12 +74,14 @@ public class Controller {
                     redisURIInput.setDisable(true);
                     connectBtn.setText("断开连接");
                     queryBtn.setDisable(false);
+                    keepAliveCheckBox.setDisable(true);
                 });
             } else {
                 Platform.runLater(() -> {
                     redisURIInput.setDisable(false);
                     connectBtn.setText("连接");
                     queryBtn.setDisable(true);
+                    keepAliveCheckBox.setDisable(false);
                 });
             }
             FileUtil.saveRedisCMD(commandInput.getText());

@@ -1,7 +1,7 @@
 <configuration>
 
     <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook">
-        <Delay>10000</Delay>
+        <Delay>100</Delay>
     </shutdownHook>
 
     <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
@@ -19,7 +19,7 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <FileNamePattern>log/redis-client-%d{yyyy-MM-dd}.log</FileNamePattern>
             <MaxHistory>30</MaxHistory>
-            <totalSizeCap>3GB</totalSizeCap>
+            <totalSizeCap>1GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%contextName %date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
