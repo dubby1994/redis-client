@@ -3,7 +3,6 @@
 *.jar
 *.log
 logs/
-lib/
 .DS_Store
 build
 target
