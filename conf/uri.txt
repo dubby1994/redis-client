@@ -1,1 +1,0 @@
-redis://:muiibafUZiej0re2@172.22.6.8:6379/8
