@@ -30,19 +30,19 @@
 
     <TextArea fx:id="commandInput" prefHeight="330.0" prefWidth="1000.0" promptText="redis command" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
         <font>
-            <Font name="System Bold" size="14.0" />
+            <Font name="Consolas Bold Italic" size="14.0" />
         </font>
     </TextArea>
 
-    <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="查询" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
+    <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="EXECUTE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
         <font>
-            <Font size="14.0" />
+            <Font name="Consolas Bold" size="14.0" />
         </font>
     </Button>
 
     <TextArea fx:id="queryResult" editable="false" prefHeight="600.0" prefWidth="1000.0" promptText="redis query result" text="redis query result" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="400.0">
         <font>
-            <Font name="System Italic" size="14.0" />
+            <Font name="Consolas Bold" size="14.0" />
         </font>
     </TextArea>
 

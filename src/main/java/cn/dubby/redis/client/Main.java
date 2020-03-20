@@ -6,6 +6,7 @@ import javafx.fxml.JavaFXBuilderFactory;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +27,7 @@ public class Main extends Application {
         fxmlLoader.setLocation(location);
         fxmlLoader.setBuilderFactory(new JavaFXBuilderFactory());
         Parent root = fxmlLoader.load();//FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Redis Manager");
+        primaryStage.setTitle("Redis Client");
         primaryStage.setScene(new Scene(root, 1000, 900));
         primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/redis.png")));
         primaryStage.show();
@@ -45,6 +46,10 @@ public class Main extends Application {
     public static void main(String[] args) throws IOException {
         logger.info("======application started======");
         initConfig();
+        System.out.println("------");
+        System.out.println(Font.getFamilies());
+        System.out.println(Font.getFontNames());
+        System.out.println("------");
         launch(args);
     }
 

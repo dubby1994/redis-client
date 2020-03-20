@@ -1,1 +1,1 @@
-redis://:password@127.0.0.1:6379/0
+redis://:muiibafUZiej0re2@172.22.6.8:6379/8

@@ -72,14 +72,14 @@ public class Controller {
             if (connectionStatus.isConnected()) {
                 Platform.runLater(() -> {
                     redisURIInput.setDisable(true);
-                    connectBtn.setText("断开连接");
+                    connectBtn.setText("disconnect");
                     queryBtn.setDisable(false);
                     keepAliveCheckBox.setDisable(true);
                 });
             } else {
                 Platform.runLater(() -> {
                     redisURIInput.setDisable(false);
-                    connectBtn.setText("连接");
+                    connectBtn.setText("connect");
                     queryBtn.setDisable(true);
                     keepAliveCheckBox.setDisable(false);
                 });
@@ -131,7 +131,7 @@ public class Controller {
             logger.error("doQuery", e);
         } finally {
             queryBtn.setDisable(false);
-            queryBtn.setText("查询");
+            queryBtn.setText("EXECUTE");
             semaphore.release();
         }
     }
