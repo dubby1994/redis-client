@@ -6,3 +6,16 @@
 
 + 不支持Redis Cluster
 + 不支持sub/pub和部分堵塞命令
+
+# 打包使用
+
+```
+mvn jfx:jar
+```
+
+然后在`target/jfx/app`里就可以找到可执行的jar了，需要包含lib一起使用
+
+``` 
+$ ls target/jfx/app/
+lib  redis-client-1.0-SNAPSHOT-jfx.jar
+```

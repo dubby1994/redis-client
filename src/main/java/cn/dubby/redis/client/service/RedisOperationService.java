@@ -6,7 +6,6 @@ import cn.dubby.redis.client.util.CheckRedisURIUtil;
 import cn.dubby.redis.client.util.RedisCommandParser;
 import cn.dubby.redis.client.util.RedisURIHelper;
 import cn.dubby.redis.client.util.StringUtil;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
