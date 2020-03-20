@@ -3,6 +3,7 @@ package cn.dubby.redis.client.service;
 import cn.dubby.redis.client.constant.RedisQueryConstant;
 import cn.dubby.redis.client.context.RedisConnectionStatus;
 import cn.dubby.redis.client.util.CheckRedisURIUtil;
+import cn.dubby.redis.client.util.QueryResultDisplayUtil;
 import cn.dubby.redis.client.util.RedisCommandParser;
 import cn.dubby.redis.client.util.RedisURIHelper;
 import cn.dubby.redis.client.util.StringUtil;
@@ -104,7 +105,7 @@ public class RedisOperationService {
     }
 
     public void disconnect() {
-        if (eventExecutors!=null) {
+        if (eventExecutors != null) {
             eventExecutors.shutdownGracefully();
         }
         connectionStatus.setConnected(false);
@@ -120,7 +121,7 @@ public class RedisOperationService {
                         if (!future.isSuccess()) {
                             logger.error("query command:{}", realCommand);
                             Platform.runLater(() -> {
-                                queryResult.setText("query command error:" + realCommand);
+                                QueryResultDisplayUtil.display(queryResult, "query command error:" + realCommand);
                             });
                         }
                     });
@@ -134,7 +135,7 @@ public class RedisOperationService {
                 try {
                     String result = doQuery(realCommand);
                     Platform.runLater(() -> {
-                        queryResult.setText(result);
+                        QueryResultDisplayUtil.display(queryResult, result);
                     });
                 } catch (Exception e) {
                     logger.error("query command:{}", realCommand, e);

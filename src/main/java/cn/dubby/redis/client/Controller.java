@@ -3,6 +3,7 @@ package cn.dubby.redis.client;
 import cn.dubby.redis.client.context.RedisConnectionStatus;
 import cn.dubby.redis.client.service.RedisOperationService;
 import cn.dubby.redis.client.util.FileUtil;
+import cn.dubby.redis.client.util.QueryResultDisplayUtil;
 import cn.dubby.redis.client.util.StringUtil;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -139,7 +140,7 @@ public class Controller {
     private void connect() {
         String redisURI = redisURIInput.getText();
         if (StringUtil.isEmpty(redisURI)) {
-            queryResult.setText("我劝你善良，不填URI，我连啥啊？");
+            QueryResultDisplayUtil.display(queryResult, "我劝你善良，不填URI，我连啥啊？");
             return;
         }
 

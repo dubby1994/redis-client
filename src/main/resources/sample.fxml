@@ -8,41 +8,50 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="930" minWidth="1000" prefHeight="930" prefWidth="1000" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="cn.dubby.redis.client.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="930" minWidth="1000" prefHeight="930" prefWidth="1000"
+            xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cn.dubby.redis.client.Controller">
 
-    <HBox prefHeight="20.0" prefWidth="1000.0" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+    <HBox prefHeight="20.0" prefWidth="1000.0" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
         <TextField fx:id="redisURIInput" prefHeight="10.0" prefWidth="500.0" text="redis://:password@127.0.0.1:6379/0">
             <font>
-                <Font size="14.0" />
+                <Font size="14.0"/>
             </font>
         </TextField>
         <Button fx:id="connectBtn" mnemonicParsing="false" onAction="#handleConnectButtonAction" text="连接">
             <font>
-                <Font size="14.0" />
+                <Font size="14.0"/>
             </font>
         </Button>
-        <CheckBox fx:id="keepAliveCheckBox" contentDisplay="CENTER" prefHeight="30.0" text="长连模式（网络稳定建议开启）" textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
+        <CheckBox fx:id="keepAliveCheckBox" contentDisplay="CENTER" prefHeight="30.0" text="长连模式（网络稳定建议开启）"
+                  textAlignment="CENTER" textOverrun="CENTER_ELLIPSIS">
             <font>
-                <Font size="16.0" />
+                <Font size="16.0"/>
             </font>
         </CheckBox>
     </HBox>
 
-    <TextArea fx:id="commandInput" prefHeight="330.0" prefWidth="1000.0" promptText="redis command" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+    <TextArea fx:id="commandInput" prefHeight="330.0" prefWidth="1000.0" promptText="redis command" wrapText="true"
+              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
         <font>
-            <Font name="Consolas Bold Italic" size="14.0" />
+            <Font name="Consolas Bold Italic" size="14.0"/>
         </font>
     </TextArea>
 
-    <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="EXECUTE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
+    <Button fx:id="queryBtn" mnemonicParsing="false" onAction="#handleQueryButtonAction" text="EXECUTE"
+            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="370.0">
         <font>
-            <Font name="Consolas Bold" size="14.0" />
+            <Font name="Consolas Bold" size="14.0"/>
         </font>
     </Button>
 
-    <TextArea fx:id="queryResult" editable="false" prefHeight="600.0" prefWidth="1000.0" promptText="redis query result" text="redis query result" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="400.0">
+    <TextArea fx:id="queryResult" editable="false" prefHeight="600.0" prefWidth="1000.0" promptText="redis query result"
+              text="redis query result" wrapText="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="400.0"
+              style="-fx-text-fill: darkblue">
         <font>
-            <Font name="Consolas Bold" size="14.0" />
+            <Font name="Consolas Bold" size="14.0"/>
         </font>
     </TextArea>
 

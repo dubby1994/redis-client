@@ -1,5 +1,6 @@
 package cn.dubby.redis.client.service;
 
+import cn.dubby.redis.client.util.QueryResultDisplayUtil;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -56,7 +57,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
         Platform.runLater(() -> {
             String result = sb.toString();
             logger.info("result:{}", result);
-            queryResult.setText(result);
+            QueryResultDisplayUtil.display(queryResult, result);
         });
         ReferenceCountUtil.release(redisMessage);
     }
@@ -64,7 +65,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         Platform.runLater(() -> {
-            queryResult.setText(cause.getMessage());
+            QueryResultDisplayUtil.display(queryResult, cause.getMessage());
         });
     }
 
@@ -72,7 +73,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         if (redisOperationService.connectionStatus.isConnected()) {
             Platform.runLater(() -> {
-                queryResult.setText("哦哦，我们和Redis的连接断开了，请检查网络是否不稳定，10s后我们也会尝试帮你重连");
+                QueryResultDisplayUtil.display(queryResult, "哦哦，我们和Redis的连接断开了，请检查网络是否不稳定，10s后我们也会尝试帮你重连");
             });
             final EventLoop eventLoop = ctx.channel().eventLoop();
             eventLoop.schedule(() -> {
@@ -80,7 +81,7 @@ public class RedisClientHandler extends ChannelDuplexHandler {
                     redisOperationService.connect();
                     logger.error("reconnect success");
                     Platform.runLater(() -> {
-                        queryResult.setText("刚才和Redis的连接断开了，不过我们帮你重连了");
+                        QueryResultDisplayUtil.display(queryResult, "刚才和Redis的连接断开了，不过我们帮你重连了");
                     });
                 } catch (Exception e) {
                     logger.error("reconnect fail", e);
